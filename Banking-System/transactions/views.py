@@ -1,5 +1,7 @@
 from dateutil.relativedelta import relativedelta
-
+from django.conf import settings
+from django.core.mail import send_mail
+from banking_system.settings import EMAIL_HOST_USER
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -115,6 +117,13 @@ class DepositMoneyView(TransactionCreateMixin):
             ]
         )
 
+        send_mail(
+            'deposit money',
+            'thank u for depositing ',
+            settings.EMAIL_HOST_USER,
+            ['pythonsahuashok@gmail.com'],
+            fail_silently=False,
+        )
         messages.success(
             self.request,
             f'{amount}$ was deposited to your account successfully'
@@ -136,6 +145,13 @@ class WithdrawMoneyView(TransactionCreateMixin):
 
         self.request.user.account.balance -= form.cleaned_data.get('amount')
         self.request.user.account.save(update_fields=['balance'])
+        send_mail(
+            'withdraw money',
+            'thank u for withdrawinging ',
+            settings.EMAIL_HOST_USER,
+            ['pythonsahuashok@gmail.com'],
+            fail_silently=False,
+        )
 
         messages.success(
             self.request,
